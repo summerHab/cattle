@@ -55,6 +55,8 @@ public class AuthorizationServerConfig {
 //				authorizationEndpoint ->
 //						authorizationEndpoint.authorizationRequestConverter()
 //		)
+
+
 		RequestMatcher endpointsMatcher = authorizationServerConfigurer
 				.getEndpointsMatcher();
 
