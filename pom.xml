@@ -88,6 +88,13 @@
                 <version>${spring.boot.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
+            <dependency>
+                <groupId>redis.clients</groupId>
+                <artifactId>jedis</artifactId>
+                <version>4.3.0</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>

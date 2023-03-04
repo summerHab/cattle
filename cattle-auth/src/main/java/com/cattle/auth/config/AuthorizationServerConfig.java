@@ -140,21 +140,22 @@ public class AuthorizationServerConfig {
 	}
 
 
-	/**
-	 * 授权服务：管理OAuth2授权信息服务
-	 */
-	@Bean
-	public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-		return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-	}
+//	/**
+//	 * 授权服务：管理OAuth2授权信息服务
+//	 */
+//	@Bean
+//	public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+//		return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
+//	}
 
-	/**
-	 * 授权确认信息处理服务
-	 */
-	@Bean
-	public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-		return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
-	}
+//
+//	/**
+//	 * 授权确认信息处理服务
+//	 */
+//	@Bean
+//	public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+//		return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+//	}
 
 
 
