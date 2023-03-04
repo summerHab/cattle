@@ -1,19 +1,26 @@
 package com.cattle.auth.config;
 
 
+import com.cattle.auth.ext.password.OAuth2PasswordAuthenticationConverter;
+import com.cattle.auth.ext.password.OAuth2PasswordResourceAuthenticationProvider;
+import com.cattle.auth.ext.password.OAuth2PasswordResourceAuthenticationProviderBuilder;
 import com.cattle.auth.jose.Jwks;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -42,24 +49,22 @@ import java.util.UUID;
 @Configuration(proxyBeanMethods = false)
 public class AuthorizationServerConfig {
 
+	@Autowired
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 		OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
 				new OAuth2AuthorizationServerConfigurer();
 
-
 		authorizationServerConfigurer
 				.oidc(Customizer.withDefaults());	// Enable OpenID Connect 1.0
-//		authorizationServerConfigurer.authorizationEndpoint(
-//				authorizationEndpoint ->
-//						authorizationEndpoint.authorizationRequestConverter()
-//		)
-
-
 		RequestMatcher endpointsMatcher = authorizationServerConfigurer
 				.getEndpointsMatcher();
-
 		http.requestMatcher(endpointsMatcher)
 			.authorizeHttpRequests(authorize ->
 				authorize.anyRequest().authenticated()
@@ -69,7 +74,12 @@ public class AuthorizationServerConfig {
 				exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
 			)
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-			.apply(authorizationServerConfigurer);
+			.apply(authorizationServerConfigurer.tokenEndpoint(
+
+					tokenEndpoint->tokenEndpoint.accessTokenRequestConverter(new OAuth2PasswordAuthenticationConverter())
+			));
+
+		addCustomOAuth2GrantAuthenticationProvider(http);
 		return http.build();
 	}
 
@@ -125,14 +135,8 @@ public class AuthorizationServerConfig {
 
 	@Bean
 	public AuthorizationServerSettings authorizationServerSettings() {
-		return AuthorizationServerSettings.builder().issuer("http://127.0.0.1:20001").build();
+		return AuthorizationServerSettings.builder().build();
 	}
-
-//	@Bean
-//	public OAuth2AuthorizationConsentService authorizationConsentService() {
-//		// Will be used by the ConsentController
-//		return new InMemoryOAuth2AuthorizationConsentService();
-//	}
 
 
 	/**
@@ -153,6 +157,25 @@ public class AuthorizationServerConfig {
 
 
 
+
+
+
+	/**
+	 * 注入授权模式实现提供方
+	 *
+	 * 1. 密码模式 </br>
+	 * 2. 短信登录 </br>
+	 *
+	 */
+	@SuppressWarnings("unchecked")
+	private void addCustomOAuth2GrantAuthenticationProvider(HttpSecurity http) {
+
+		OAuth2PasswordResourceAuthenticationProvider oAuth2PasswordResourceAuthenticationProvider = new OAuth2PasswordResourceAuthenticationProviderBuilder(
+				http, userDetailsService, passwordEncoder).build();
+
+		// 处理 UsernamePasswordAuthenticationToken
+		http.authenticationProvider(oAuth2PasswordResourceAuthenticationProvider);
+	}
 
 
 

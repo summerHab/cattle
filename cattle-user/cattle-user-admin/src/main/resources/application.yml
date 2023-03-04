@@ -12,7 +12,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://127.0.0.1:20001
+#          issuer-uri: http://127.0.0.1:20001
+          jwk-set-uri: http://127.0.0.1:20001/oauth2/jwks
 
 
 mybatis-plus:
@@ -23,3 +24,11 @@ mybatis-plus:
   type-aliases-package: com.cattle.auth.mapper.entity
 
 
+logging:
+  level:
+    root: info
+    org.springframework.web: info
+    org.springframework.security: info
+    org.springframework.security.oauth2: info
+    org.springframework.security.web.FilterChainProxy: trace # 过滤器执行顺序
+    org.springframework.security.web.access.ExceptionTranslationFilter: trace #异常处理

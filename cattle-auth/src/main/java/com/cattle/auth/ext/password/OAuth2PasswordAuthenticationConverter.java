@@ -1,8 +1,7 @@
 package com.cattle.auth.ext.password;
 
 
-import com.auth.common.core.constant.AuthorizationConstants;
-import com.cattle.auth.ext.util.OAuth2EndpointUtils;
+import com.cattle.auth.ext.utils.OAuth2EndpointUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -11,21 +10,25 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
+/***
+ * @author byh
+ * @descreation oauth2 扩展的password  AuthenticationConverter
+ * @date 2023-03-02
+ */
 
 public final class OAuth2PasswordAuthenticationConverter implements AuthenticationConverter {
 
 
-
     @Override
     public Authentication convert(HttpServletRequest request) {
-
-        // grant_type (REQUIRED) sms_code
+        // grant_type (REQUIRED) password
         String grantType = request.getParameter(OAuth2ParameterNames.GRANT_TYPE);
-        if (!AuthorizationConstants.AUTHORIZATION_GRANT_TYPE_SMS_CODE.equals(grantType)) {
+        if (!AuthorizationGrantType.PASSWORD.getValue().equals(grantType)) {
             return null;
         }
         Authentication clientPrincipal = SecurityContextHolder.getContext().getAuthentication();
@@ -37,7 +40,7 @@ public final class OAuth2PasswordAuthenticationConverter implements Authenticati
             OAuth2EndpointUtils.throwError(
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     OAuth2ParameterNames.SCOPE,
-                   OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
+                    OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
         }
         Set<String> requestedScopes = null;
         if (StringUtils.hasText(scope)) {
@@ -46,27 +49,7 @@ public final class OAuth2PasswordAuthenticationConverter implements Authenticati
         }
 
         //参数校验
-        this.checkParams(request);
 
-        Map<String, Object> additionalParameters = new HashMap<>();
-        parameters.forEach((key, value) -> {
-            if (!key.equals(OAuth2ParameterNames.GRANT_TYPE) &&
-                    !key.equals(OAuth2ParameterNames.SCOPE)) {
-                additionalParameters.put(key, value.get(0));
-            }
-        });
-        return new OAuth2PasswordAuthenticationToken(
-                AuthorizationGrantType.PASSWORD,
-                clientPrincipal, requestedScopes, additionalParameters);
-    }
-
-
-    /***
-     * 参数校验
-     * @param request
-     */
-    public void checkParams(HttpServletRequest request) {
-        MultiValueMap<String, String> parameters = OAuth2EndpointUtils.getParameters(request);
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
@@ -80,6 +63,17 @@ public final class OAuth2PasswordAuthenticationConverter implements Authenticati
             OAuth2EndpointUtils.throwError(OAuth2ErrorCodes.INVALID_REQUEST, OAuth2ParameterNames.PASSWORD,
                     OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
         }
+
+        Map<String, Object> additionalParameters = new HashMap<>();
+        parameters.forEach((key, value) -> {
+            if (!key.equals(OAuth2ParameterNames.GRANT_TYPE) &&
+                    !key.equals(OAuth2ParameterNames.SCOPE)) {
+                additionalParameters.put(key, value.get(0));
+            }
+        });
+        return new OAuth2PasswordAuthenticationToken(
+                AuthorizationGrantType.PASSWORD,
+                clientPrincipal, requestedScopes, additionalParameters, username, password);
     }
 
 
