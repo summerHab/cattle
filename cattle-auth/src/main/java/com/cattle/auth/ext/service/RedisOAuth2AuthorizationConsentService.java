@@ -1,4 +1,4 @@
-package com.cattle.auth.service;
+package com.cattle.auth.ext.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -6,13 +6,12 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
 import java.util.concurrent.TimeUnit;
 
 
 @Component
 @RequiredArgsConstructor
-public class PigRedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
+public class RedisOAuth2AuthorizationConsentService implements OAuth2AuthorizationConsentService {
 
 	private final RedisTemplate<String, Object> redisTemplate;
 
@@ -21,7 +20,6 @@ public class PigRedisOAuth2AuthorizationConsentService implements OAuth2Authoriz
 	@Override
 	public void save(OAuth2AuthorizationConsent authorizationConsent) {
 		Assert.notNull(authorizationConsent, "authorizationConsent cannot be null");
-
 		redisTemplate.opsForValue()
 			.set(buildKey(authorizationConsent), authorizationConsent, TIMEOUT, TimeUnit.MINUTES);
 

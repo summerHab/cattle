@@ -12,7 +12,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-#          issuer-uri: http://127.0.0.1:20001
+          issuer-uri: http://127.0.0.1:20001
           jwk-set-uri: http://127.0.0.1:20001/oauth2/jwks
 
 

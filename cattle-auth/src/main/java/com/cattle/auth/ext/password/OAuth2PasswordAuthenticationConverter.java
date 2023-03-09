@@ -33,23 +33,8 @@ public final class OAuth2PasswordAuthenticationConverter implements Authenticati
         }
         Authentication clientPrincipal = SecurityContextHolder.getContext().getAuthentication();
         MultiValueMap<String, String> parameters = OAuth2EndpointUtils.getParameters(request);
-        // scope (OPTIONAL)
-        String scope = parameters.getFirst(OAuth2ParameterNames.SCOPE);
-        if (StringUtils.hasText(scope) &&
-                parameters.get(OAuth2ParameterNames.SCOPE).size() != 1) {
-            OAuth2EndpointUtils.throwError(
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    OAuth2ParameterNames.SCOPE,
-                    OAuth2EndpointUtils.ACCESS_TOKEN_REQUEST_ERROR_URI);
-        }
-        Set<String> requestedScopes = null;
-        if (StringUtils.hasText(scope)) {
-            requestedScopes = new HashSet<>(
-                    Arrays.asList(StringUtils.delimitedListToStringArray(scope, " ")));
-        }
 
         //参数校验
-
         // username (REQUIRED)
         String username = parameters.getFirst(OAuth2ParameterNames.USERNAME);
         if (!StringUtils.hasText(username) || parameters.get(OAuth2ParameterNames.USERNAME).size() != 1) {
@@ -66,14 +51,13 @@ public final class OAuth2PasswordAuthenticationConverter implements Authenticati
 
         Map<String, Object> additionalParameters = new HashMap<>();
         parameters.forEach((key, value) -> {
-            if (!key.equals(OAuth2ParameterNames.GRANT_TYPE) &&
-                    !key.equals(OAuth2ParameterNames.SCOPE)) {
+            if (!key.equals(OAuth2ParameterNames.GRANT_TYPE)) {
                 additionalParameters.put(key, value.get(0));
             }
         });
         return new OAuth2PasswordAuthenticationToken(
                 AuthorizationGrantType.PASSWORD,
-                clientPrincipal, requestedScopes, additionalParameters, username, password);
+                clientPrincipal, additionalParameters, username, password);
     }
 
 

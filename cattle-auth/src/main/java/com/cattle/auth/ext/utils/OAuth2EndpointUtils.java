@@ -14,12 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Utility methods for the OAuth 2.0 Protocol Endpoints.
- *
- * @author Joe Grandja
- * @since 0.1.2
- */
+
 public class OAuth2EndpointUtils {
 	public static final String ACCESS_TOKEN_REQUEST_ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-5.2";
 

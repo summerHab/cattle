@@ -65,15 +65,6 @@ public final class OAuth2PasswordResourceAuthenticationProvider implements Authe
             throw new OAuth2AuthenticationException(OAuth2ErrorCodes.UNSUPPORTED_GRANT_TYPE);
         }
 
-        Set<String> authorizedScopes = Collections.emptySet();
-        if (!CollectionUtils.isEmpty(oAuth2PasswordAuthenticationToken.getScopes())) {
-            for (String requestedScope : oAuth2PasswordAuthenticationToken.getScopes()) {
-                if (!registeredClient.getScopes().contains(requestedScope)) {
-                    throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_SCOPE);
-                }
-            }
-            authorizedScopes = new LinkedHashSet<>(oAuth2PasswordAuthenticationToken.getScopes());
-        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace("Validated token request parameters");
@@ -89,6 +80,7 @@ public final class OAuth2PasswordResourceAuthenticationProvider implements Authe
         if (userDetails == null) {
             throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_GRANT);
         }
+        //todo 此处补充密码验证逻辑
 //        String password = oAuth2PasswordAuthenticationToken.getPassword();
 //        String passwordDb = userDetails.getPassword();
 //        String encode = passwordEncoder.encode(password);
@@ -111,7 +103,7 @@ public final class OAuth2PasswordResourceAuthenticationProvider implements Authe
                 .registeredClient(registeredClient)
                 .principal(principal)
                 .authorizationServerContext(AuthorizationServerContextHolder.getContext())
-                .authorizedScopes(authorizedScopes)
+                .authorizedScopes(registeredClient.getScopes())
                 .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                 .authorizationGrant(oAuth2PasswordAuthenticationToken);
         // @formatter:on
@@ -120,7 +112,7 @@ public final class OAuth2PasswordResourceAuthenticationProvider implements Authe
                 OAuth2Authorization
                         .withRegisteredClient(registeredClient)
                         .authorizationGrantType(AuthorizationGrantType.PASSWORD)
-                        .authorizedScopes(authorizedScopes)
+                        .authorizedScopes(registeredClient.getScopes())
                         .principalName(principal.getName())
                         .attribute(principal.getName(), principal);
 

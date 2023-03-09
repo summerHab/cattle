@@ -1,4 +1,4 @@
-package com.cattle.auth.service;
+package com.cattle.auth.ext.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,14 +20,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author lengleng
- * @date 2022/5/27
- */
 
 @Component
 @RequiredArgsConstructor
-public class PigRedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
+public class RedisOAuth2AuthorizationService implements OAuth2AuthorizationService {
 
 	private final static Long TIMEOUT = 10L;
 

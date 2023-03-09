@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 public final class OAuth2PasswordAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -17,14 +16,12 @@ public final class OAuth2PasswordAuthenticationToken extends AbstractAuthenticat
     private final AuthorizationGrantType authorizationGrantType;
     private final Authentication clientPrincipal;
     private final Map<String, Object> additionalParameters;
-    private final Set<String> scopes;
     private final String username;
     private final String password;
 
 
     protected OAuth2PasswordAuthenticationToken(AuthorizationGrantType authorizationGrantType,
                                                 Authentication clientPrincipal,
-                                                Set<String> scopes,
                                                 Map<String, Object> additionalParameters,
                                                 String username,
                                                 String password
@@ -36,7 +33,6 @@ public final class OAuth2PasswordAuthenticationToken extends AbstractAuthenticat
         this.password = password;
         this.authorizationGrantType = authorizationGrantType;
         this.clientPrincipal = clientPrincipal;
-        this.scopes = scopes;//暂时没有使用
         this.additionalParameters = additionalParameters;
     }
 
@@ -59,9 +55,6 @@ public final class OAuth2PasswordAuthenticationToken extends AbstractAuthenticat
         return additionalParameters;
     }
 
-    public Set<String> getScopes() {
-        return scopes;
-    }
 
     public String getUsername() {
         return username;

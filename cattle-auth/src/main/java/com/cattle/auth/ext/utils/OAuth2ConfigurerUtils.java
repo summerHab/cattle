@@ -23,12 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
-/**
- * Utility methods for the OAuth 2.0 Configurers.
- *
- * @author Joe Grandja
- * @since 0.1.2
- */
+
 public final class OAuth2ConfigurerUtils {
 
 	private OAuth2ConfigurerUtils() {

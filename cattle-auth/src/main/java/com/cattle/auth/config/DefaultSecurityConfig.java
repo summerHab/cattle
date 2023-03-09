@@ -28,6 +28,7 @@ public class DefaultSecurityConfig {
 				authorizeRequests->
 						authorizeRequests.anyRequest().authenticated()
 		).formLogin().and().csrf().disable().logout().and().oauth2ResourceServer().jwt();
+
 		return http.build();
 	}
 
