@@ -1,5 +1,5 @@
 
-package com.cattle.user.admin.jose;
+package com.cattle.auth.ext.utils;
 
 import com.nimbusds.jose.jwk.RSAKey;
 

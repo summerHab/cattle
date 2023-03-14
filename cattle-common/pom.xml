@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>cattle-common-core</module>
-        <module>cattle-security</module>
     </modules>
 
 

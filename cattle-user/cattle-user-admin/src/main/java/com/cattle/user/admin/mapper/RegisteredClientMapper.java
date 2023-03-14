@@ -8,5 +8,8 @@ import org.apache.ibatis.annotations.Param;
 
 
 public interface RegisteredClientMapper extends BaseMapper<RegisteredClientEntity> {
+
     RegisteredClientEntity selectByClientId(@Param("clientId") String clientId);
+
+
 }

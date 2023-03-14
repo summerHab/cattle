@@ -5,7 +5,7 @@
     <parent>
         <artifactId>spring-boot-starter-parent</artifactId>
         <groupId>org.springframework.boot</groupId>
-        <version>2.7.9</version>
+        <version>3.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,14 +20,14 @@
     </modules>
     <packaging>pom</packaging>
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.version>${project.version}</project.version>
-        <spring.boot.version>2.7.9</spring.boot.version>
+        <spring.boot.version>3.0.0</spring.boot.version>
         <lombok.version>1.18.24</lombok.version>
         <mysql.version>8.0.32</mysql.version>
         <mybatis.plus.version>3.5.3</mybatis.plus.version>
-        <oauth2.authorization.version>0.4.1</oauth2.authorization.version>
+        <oauth2.authorization.version>1.0.1</oauth2.authorization.version>
     </properties>
 
 
@@ -88,12 +88,12 @@
                 <version>${spring.boot.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
-            <dependency>
-                <groupId>redis.clients</groupId>
-                <artifactId>jedis</artifactId>
-                <version>4.3.0</version>
-            </dependency>
+<!--            &lt;!&ndash; https://mvnrepository.com/artifact/redis.clients/jedis &ndash;&gt;-->
+<!--            <dependency>-->
+<!--                <groupId>redis.clients</groupId>-->
+<!--                <artifactId>jedis</artifactId>-->
+<!--                <version>4.3.0</version>-->
+<!--            </dependency>-->
 
 
         </dependencies>

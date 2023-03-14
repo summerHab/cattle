@@ -4,7 +4,7 @@ package com.cattle.auth.config;
 import com.cattle.auth.ext.password.OAuth2PasswordAuthenticationConverter;
 import com.cattle.auth.ext.password.OAuth2PasswordResourceAuthenticationProvider;
 import com.cattle.auth.ext.password.OAuth2PasswordResourceAuthenticationProviderBuilder;
-import com.cattle.auth.jose.Jwks;
+import com.cattle.auth.ext.utils.Jwks;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
@@ -62,7 +62,9 @@ public class AuthorizationServerConfig {
                 .oidc(Customizer.withDefaults());    // Enable OpenID Connect 1.0
         RequestMatcher endpointsMatcher = authorizationServerConfigurer
                 .getEndpointsMatcher();
-        http.requestMatcher(endpointsMatcher)
+
+        http
+                .securityMatcher(endpointsMatcher)
                 .authorizeHttpRequests(authorize ->
                         authorize.anyRequest().authenticated()
                 )
@@ -71,11 +73,7 @@ public class AuthorizationServerConfig {
                         exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
                 )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                .apply(authorizationServerConfigurer.tokenEndpoint(
-
-                        tokenEndpoint -> tokenEndpoint.accessTokenRequestConverter(new OAuth2PasswordAuthenticationConverter())
-                ));
-
+                .apply(authorizationServerConfigurer);
         addCustomOAuth2GrantAuthenticationProvider(http);
         return http.build();
     }
